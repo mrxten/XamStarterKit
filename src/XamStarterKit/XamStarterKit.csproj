@@ -5,14 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac">
-      <Version>4.6.2</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.Portable.Compatibility">
       <Version>1.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Xamarin.Forms">
-      <Version>2.4.0.282</Version>
     </PackageReference>
   </ItemGroup>
 
