@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27019.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamStarterKit", "XamStarterKit\XamStarterKit.csproj", "{931F8655-BF34-4F25-858D-042DAA15D3AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamStarterKit", "XamStarterKit\XamStarterKit.csproj", "{81CC6DAA-6DBD-45FA-99E0-F56C6B09DEA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamStarterKit.Forms", "XamStarterKit.Forms\XamStarterKit.Forms.csproj", "{C82F2F83-A321-4183-B926-6D8232E5BFDA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XForms", "XForms", "{54F63C79-229D-4691-A87F-E5B7E3512BAF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XForms", "XForms", "{0022D944-9E21-49BC-BE7A-1AEC9738A640}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamStarterKit.Forms", "XamStarterKit.Forms\XamStarterKit.Forms.csproj", "{A91047D5-3512-40EF-AEED-A41390DDA8D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamStarterKit.Forms.Android", "XamStarterKit.Forms.Android\XamStarterKit.Forms.Android.csproj", "{6117855B-40AE-43CF-A9FD-76B3A03B6126}"
 EndProject
@@ -19,14 +19,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{931F8655-BF34-4F25-858D-042DAA15D3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{931F8655-BF34-4F25-858D-042DAA15D3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{931F8655-BF34-4F25-858D-042DAA15D3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{931F8655-BF34-4F25-858D-042DAA15D3AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C82F2F83-A321-4183-B926-6D8232E5BFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C82F2F83-A321-4183-B926-6D8232E5BFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C82F2F83-A321-4183-B926-6D8232E5BFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C82F2F83-A321-4183-B926-6D8232E5BFDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81CC6DAA-6DBD-45FA-99E0-F56C6B09DEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81CC6DAA-6DBD-45FA-99E0-F56C6B09DEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81CC6DAA-6DBD-45FA-99E0-F56C6B09DEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81CC6DAA-6DBD-45FA-99E0-F56C6B09DEA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A91047D5-3512-40EF-AEED-A41390DDA8D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A91047D5-3512-40EF-AEED-A41390DDA8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A91047D5-3512-40EF-AEED-A41390DDA8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A91047D5-3512-40EF-AEED-A41390DDA8D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6117855B-40AE-43CF-A9FD-76B3A03B6126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6117855B-40AE-43CF-A9FD-76B3A03B6126}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6117855B-40AE-43CF-A9FD-76B3A03B6126}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,11 +40,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{C82F2F83-A321-4183-B926-6D8232E5BFDA} = {0022D944-9E21-49BC-BE7A-1AEC9738A640}
-		{6117855B-40AE-43CF-A9FD-76B3A03B6126} = {0022D944-9E21-49BC-BE7A-1AEC9738A640}
-		{8BA989E9-2A32-4D69-8FAC-4BBEBAFE66D7} = {0022D944-9E21-49BC-BE7A-1AEC9738A640}
+		{A91047D5-3512-40EF-AEED-A41390DDA8D1} = {54F63C79-229D-4691-A87F-E5B7E3512BAF}
+		{6117855B-40AE-43CF-A9FD-76B3A03B6126} = {54F63C79-229D-4691-A87F-E5B7E3512BAF}
+		{8BA989E9-2A32-4D69-8FAC-4BBEBAFE66D7} = {54F63C79-229D-4691-A87F-E5B7E3512BAF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {367BD7B7-E413-483E-B945-A6A66529B2A9}
+		SolutionGuid = {8C31FAD9-E425-4DA1-9DEE-1DC2352C2297}
 	EndGlobalSection
 EndGlobal

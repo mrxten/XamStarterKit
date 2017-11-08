@@ -16,11 +16,7 @@ namespace XamStarterKit.Extensions.Bindings
 
         public ObservableCommand(Action action)
         {
-            _task = () =>
-            {
-                action.Invoke();
-                return Task.CompletedTask;
-            };
+            _task = () => Task.FromResult(action);
         }
 
         public bool CanExecute(object parameter) => _canExecute;

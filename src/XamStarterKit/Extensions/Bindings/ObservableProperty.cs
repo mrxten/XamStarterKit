@@ -6,8 +6,14 @@
 
         public T Value
         {
-            get => _value;
-            set => SetProperty(ref _value, value, nameof(Value));
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                SetProperty(ref _value, value, nameof(Value));
+            }
         }
 
         public ObservableProperty()

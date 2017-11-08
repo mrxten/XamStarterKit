@@ -21,14 +21,23 @@ namespace XamStarterKit.Forms.Extensions.States
 
         private static async void StateChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            if (bindable is StateContainer parent)
+            if (bindable is StateContainer)
+            {
+                var parent = (StateContainer)bindable;
                 await parent.ChooseStateProperty(newValue);
+            }
         }
 
         public object State
         {
-            get => GetValue(StateProperty);
-            set => SetValue(StateProperty, value);
+            get
+            {
+                return GetValue(StateProperty);
+            }
+            set
+            {
+                SetValue(StateProperty, value);
+            }
         }
 
         private async Task ChooseStateProperty(object newValue)

@@ -92,19 +92,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XamStarterKit.Forms\XamStarterKit.Forms.csproj">
-      <Project>{c82f2f83-a321-4183-b926-6d8232e5bfda}</Project>
+      <Project>{a91047d5-3512-40ef-aeed-a41390dda8d1}</Project>
       <Name>XamStarterKit.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\XamStarterKit\XamStarterKit.csproj">
-      <Project>{931f8655-bf34-4f25-858d-042daa15d3af}</Project>
+      <Project>{81cc6daa-6dbd-45fa-99e0-f56c6b09dea1}</Project>
       <Name>XamStarterKit</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
