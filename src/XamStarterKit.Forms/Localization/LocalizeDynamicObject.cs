@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace XamStarterKit.Forms.Localization
 {
-    public class LocalizeDynamicObject : DynamicObject, INotifyPropertyChanged
+    public class LocalizeDynamicObject : DynamicObject, INotifyPropertyChanged, IDisposable
     {
         private static ResourceManager _resourceManager;
 
@@ -57,6 +57,12 @@ namespace XamStarterKit.Forms.Localization
                     _members.Add(this, new HashSet<string>(new[] { binder.Name }));
 
             return true;
+        }
+
+        public void Dispose()
+        {
+            if (_members.ContainsKey(this))
+                _members.Remove(this);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
