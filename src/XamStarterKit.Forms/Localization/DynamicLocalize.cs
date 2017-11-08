@@ -8,21 +8,37 @@ using System.Runtime.CompilerServices;
 
 namespace XamStarterKit.Forms.Localization
 {
-    public class LocalizeDynamicObject : DynamicObject, INotifyPropertyChanged, IDisposable
+    public class DynamicLocalize : INotifyPropertyChanged, IDisposable
     {
         private static ResourceManager _resourceManager;
 
         private static CultureInfo _ci;
 
-        private static Dictionary<LocalizeDynamicObject, HashSet<string>> _members;
+        private static Dictionary<DynamicLocalize, HashSet<string>> _members;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [IndexerName("Index")]
+        public string this[string name]
+        {
+            get
+            {
+                var str = _resourceManager.GetString(name, _ci);
+
+                if (str != null)
+                    if (_members.ContainsKey(this))
+                        _members[this].Add($"Index[{name}]");
+                    else
+                        _members.Add(this, new HashSet<string>(new[] { $"Index[{name}]" }));
+                return str ?? name;
+            }
+        }
 
         public static void Init(ResourceManager manager, CultureInfo cultureInfo)
         {
             _resourceManager = manager;
             _ci = cultureInfo;
-            _members = new Dictionary<LocalizeDynamicObject, HashSet<string>>();
+            _members = new Dictionary<DynamicLocalize, HashSet<string>>();
         }
 
         public static void UpdateCulture(CultureInfo cultureInfo)
@@ -40,23 +56,6 @@ namespace XamStarterKit.Forms.Localization
                     member.Key.OnPropertyChanged(prop);
                 }
             }
-        }
-
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            if (_resourceManager == null)
-                throw new NullReferenceException("Please call Init before this.");
-
-            var str = _resourceManager.GetString(binder.Name, _ci);
-            result = str ?? binder.Name;
-
-            if (str != null)
-                if (_members.ContainsKey(this))
-                    _members[this].Add(binder.Name);
-                else
-                    _members.Add(this, new HashSet<string>(new[] { binder.Name }));
-
-            return true;
         }
 
         public void Dispose()

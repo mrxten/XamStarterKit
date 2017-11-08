@@ -1,4 +1,10 @@
-﻿using XamStarterKit.Forms.Localization;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Resources;
+using System.Runtime.CompilerServices;
+using XamStarterKit.Forms.Localization;
 using XamStarterKit.Forms.ViewModels.Abstractions;
 using XamStarterKit.ViewModels.Implementations;
 
@@ -6,11 +12,11 @@ namespace XamStarterKit.Forms.ViewModels.Implementations
 {
     public class FormsBaseViewModel : BaseViewModel, IFormsViewModel
     {
-        public dynamic Localize { get; }
+        public DynamicLocalize Localize { get; }
 
         public FormsBaseViewModel()
         {
-            Localize = new LocalizeDynamicObject();
+            Localize = new DynamicLocalize();
         }
 
         public virtual void FirstAppearing()

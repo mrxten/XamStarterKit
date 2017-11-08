@@ -5,7 +5,7 @@ namespace XamStarterKit.Forms.ViewModels.Abstractions
 {
     public interface IFormsViewModel : IViewModel
     {
-        dynamic Localize { get; }
+        DynamicLocalize Localize { get; }
 
         void FirstAppearing();
 

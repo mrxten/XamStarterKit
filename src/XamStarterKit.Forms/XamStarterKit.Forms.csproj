@@ -39,8 +39,9 @@
     <Compile Include="Extensions\Pages\ExtPage.cs" />
     <Compile Include="Extensions\States\StateCondition.cs" />
     <Compile Include="Extensions\States\StateContainer.cs" />
-    <Compile Include="Localization\LocalizeDynamicObject.cs" />
+    <Compile Include="Localization\DynamicLocalize.cs" />
     <Compile Include="Localization\PlatformCulture.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Abstractions\IFormsViewModel.cs" />
     <Compile Include="ViewModels\Implementations\FormsBaseViewModel.cs" />

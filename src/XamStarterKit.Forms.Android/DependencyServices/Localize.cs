@@ -5,16 +5,11 @@ using XamStarterKit.Forms.Android.DependencyServices;
 using XamStarterKit.Forms.DependencyServices;
 using XamStarterKit.Forms.Localization;
 
-[assembly: Dependency(typeof(Localize))]
+[assembly: Dependency(typeof(XamStarterKit.Forms.Android.DependencyServices.Localize))]
 namespace XamStarterKit.Forms.Android.DependencyServices
 {
     public class Localize : ILocalize
     {
-        public void SetLocale(CultureInfo ci)
-        {
-            Thread.CurrentThread.CurrentCulture = ci;
-            Thread.CurrentThread.CurrentUICulture = ci;
-        }
 
         public CultureInfo GetCurrentCultureInfo()
         {

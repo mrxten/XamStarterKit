@@ -6,7 +6,7 @@ using XamStarterKit.Forms.DependencyServices;
 using XamStarterKit.Forms.iOS.DependencyServices;
 using XamStarterKit.Forms.Localization;
 
-[assembly: Dependency(typeof(Localize))]
+[assembly: Dependency(typeof(XamStarterKit.Forms.iOS.DependencyServices.Localize))]
 namespace XamStarterKit.Forms.iOS.DependencyServices
 {
     public class Localize : ILocalize
@@ -41,12 +41,6 @@ namespace XamStarterKit.Forms.iOS.DependencyServices
                 }
             }
             return ci;
-        }
-
-        public void SetLocale(CultureInfo ci)
-        {
-            Thread.CurrentThread.CurrentCulture = ci;
-            Thread.CurrentThread.CurrentUICulture = ci;
         }
 
         string iOSToDotnetLanguage(string iOSLanguage)
