@@ -1,10 +1,11 @@
 ﻿using System;
 using Xamarin.Forms;
+using XamStarterKit.Pages.Abstractions;
 using XamStarterKit.ViewModels.Abstractions;
 
 namespace XamStarterKit.Pages.Implementations
 {
-    public class BasePage : ContentPage
+    public class BasePage : ContentPage, IBasePage
     {
         public BasePage()
         {
