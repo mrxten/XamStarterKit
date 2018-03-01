@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>XamStarterKit</id>
-    <version>0.2.0-pre</version>
+    <version>0.2.1-pre</version>
     <authors>Vladislav Zhukov</authors>
     <owners>mrxten</owners>
     <licenseUrl>https://github.com/mrxten/XamStarterKit/blob/master/LICENSE</licenseUrl>
@@ -17,9 +17,9 @@
     </dependencies>	
   </metadata>
 	<files>
-	  <!--PCL-->
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\portable-win+net45+wp8+win8+wpa81" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\portable-win+net45+wp8+win8+wpa81" />
+	  <!--NetStandard-->
+	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\netstandard1.6" />
+	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\netstandard1.6" />
 	  <!--Android-->
 	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\MonoAndroid" />
 	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\MonoAndroid" />
