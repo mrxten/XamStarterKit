@@ -10,9 +10,15 @@ namespace XamStarterKit.Helpers.States
     [ContentProperty("Conditions")]
     public class StateContainer : ContentView
     {
-        public List<StateCondition> Conditions { get; set; } = new List<StateCondition>();
+		public static readonly BindableProperty ConditionsProperty = BindableProperty.Create(nameof(Conditions), typeof(IList<StateCondition>), typeof(StateContainer), null, BindingMode.Default, null, PropertyChanged);
 
-        public static readonly BindableProperty StateProperty = BindableProperty.Create(nameof(State), typeof(object), typeof(StateContainer), null, BindingMode.Default, null, StateChanged);
+		public IList<StateCondition> Conditions
+		{
+			get =>(IList<StateCondition>) GetValue(ConditionsProperty);
+			set => SetValue(ConditionsProperty, value);
+		}
+
+        public static readonly BindableProperty StateProperty = BindableProperty.Create(nameof(State), typeof(object), typeof(StateContainer), null, BindingMode.Default, null, PropertyChanged);
 
 		public object State
 		{
@@ -25,12 +31,11 @@ namespace XamStarterKit.Helpers.States
             //for linker
         }
 
-        private static async void StateChanged(BindableObject bindable, object oldValue, object newValue)
+        private static async void PropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            if (bindable is StateContainer)
+            if (bindable is StateContainer sc)
             {
-                var parent = (StateContainer)bindable;
-                await parent.ChooseStateProperty(newValue);
+                await sc.ChooseStateProperty(sc.State);
             }
         }
 
