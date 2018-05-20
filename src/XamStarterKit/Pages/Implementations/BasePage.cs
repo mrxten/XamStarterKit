@@ -5,16 +5,18 @@ using XamStarterKit.ViewModels.Abstractions;
 
 namespace XamStarterKit.Pages.Implementations
 {
-    public class BasePage : ContentPage, IBasePage
+    public class BasePage : ContentPage, IBasePage, IDisposable
     {
-        public BasePage()
+		public IBaseViewModel ViewModel => BindingContext as IBaseViewModel;
+
+		public BasePage()
         {
             Appearing += OnAppearing;
         }
 
         private void OnAppearing(object sender, EventArgs eventArgs)
         {
-            (BindingContext as IBaseViewModel)?.PageFirstOpened();
+            (BindingContext as IBaseViewModel)?.FirstAppearing();
             Appearing -= OnAppearing;
         }
 
@@ -34,5 +36,10 @@ namespace XamStarterKit.Pages.Implementations
             base.OnDisappearing();
             (BindingContext as IBaseViewModel)?.Disappering();
         }
-    }
+
+		public virtual void Dispose()
+		{
+			ViewModel?.Dispose();
+		}
+	}
 }

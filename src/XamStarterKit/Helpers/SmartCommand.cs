@@ -8,21 +8,18 @@ namespace XamStarterKit.Helpers
 		private readonly Func<object, bool> _canExecute;
 		private readonly Action<object> _execute;
 
+		//Not using in this implementation
 		public event EventHandler CanExecuteChanged;
 		
-		private bool _isCanExecute;
-
-		public SmartCommand(Action execute, Func<bool> canExecute = null, bool defaultCanExecute = true) : this(o => execute(), canExecute == null ? (Func<object, bool>)null : c => canExecute(), defaultCanExecute)
+		public SmartCommand(Action execute, Func<bool> canExecute = null) : this(o => execute(), c => canExecute?.Invoke() ?? true)
 		{
 		}
 
-		public SmartCommand(Action<object> execute, Func<object, bool> canExecute = null, bool defaultCanExecute = true)
+		public SmartCommand(Action<object> execute, Func<object, bool> canExecute = null)
 		{
 			_execute = execute;
 			_canExecute = canExecute;
-			_isCanExecute = defaultCanExecute;
 		}
-
 
 		public void Execute(object parameter)
 		{
@@ -36,25 +33,9 @@ namespace XamStarterKit.Helpers
 				_execute?.Invoke(null);
 		}
 
-		public bool IsCanExecute
-		{
-			get => _isCanExecute;
-			set
-			{
-				_isCanExecute = value;
-				ChangeCanExecute();
-			}
-		}
-
-		public void ChangeCanExecute()
-		{
-			var changed = CanExecuteChanged;
-			changed?.Invoke(this, EventArgs.Empty);
-		}
-
 		public bool CanExecute(object parameter)
 		{
-			return _canExecute?.Invoke(parameter) ?? IsCanExecute;
+			return _canExecute?.Invoke(parameter) ?? true;
 		}
 	}
 }

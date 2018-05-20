@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using XamStarterKit.Annotations;
 
 namespace XamStarterKit.Helpers
 {

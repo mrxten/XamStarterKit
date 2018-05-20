@@ -7,16 +7,18 @@ namespace XamStarterKit.ViewModels.Abstractions
 	{
         DynamicLocalize L { get; }
 
-        void Appearing();
+		void Init();
+
+		void Appearing();
 
         void Disappering();
 
         bool BackButtonPressed();
 
-	    void PageFirstOpened();
+	    void FirstAppearing();
 
-	    void PageLeaved();
+	    void Leaved();
 
-	    void ReturnedToPage();
+	    void ReturnedBack();
     }
 }

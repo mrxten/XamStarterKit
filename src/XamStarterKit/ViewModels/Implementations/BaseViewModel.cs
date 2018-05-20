@@ -20,7 +20,11 @@ namespace XamStarterKit.ViewModels.Implementations
             L = new DynamicLocalize();
         }
 
-        public virtual void Appearing()
+		public virtual void Init()
+		{
+		}
+
+		public virtual void Appearing()
         {
         }
 
@@ -34,15 +38,15 @@ namespace XamStarterKit.ViewModels.Implementations
             return false;
         }
 
-	    public virtual void PageFirstOpened()
+	    public virtual void FirstAppearing()
 	    {
 	    }
 
-	    public virtual void PageLeaved()
+	    public virtual void Leaved()
 	    {
 	    }
 
-	    public virtual void ReturnedToPage()
+	    public virtual void ReturnedBack()
 	    {
 	    }
 
@@ -62,5 +66,47 @@ namespace XamStarterKit.ViewModels.Implementations
 		    BasicCancellation?.Cancel();
 		    BasicCancellation?.Dispose();
 	    }
+
+		#region MakeCommand
+
+		readonly ConcurrentDictionary<string, ICommand> _cachedCommands = new ConcurrentDictionary<string, ICommand>();
+
+		public ConcurrentDictionary<string, ICommand> CachedCommands => _cachedCommands;
+
+		protected SmartCommand MakeCommand(Action commandAction, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null)
+		{
+			return GetCommand(propertyName) as SmartCommand ?? SaveCommand(new SmartCommand(commandAction, canExecute), propertyName) as SmartCommand;
+		}
+		protected SmartCommand MakeCommand(Action<object> commandAction, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null)
+		{
+			return GetCommand(propertyName) as SmartCommand ?? SaveCommand(new SmartCommand(commandAction, canExecute), propertyName) as SmartCommand;
+		}
+
+		ICommand SaveCommand(ICommand command, string propertyName)
+		{
+			if (string.IsNullOrEmpty(propertyName))
+				throw new ArgumentNullException(nameof(propertyName));
+
+			if (!CachedCommands.ContainsKey(propertyName))
+			{
+				CachedCommands.TryAdd(propertyName, command);
+			}
+
+			return command;
+		}
+
+		ICommand GetCommand(string propertyName)
+		{
+			if (string.IsNullOrEmpty(propertyName))
+				throw new ArgumentNullException(nameof(propertyName));
+
+			ICommand cachedCommand;
+			if (CachedCommands.TryGetValue(propertyName, out cachedCommand))
+				return cachedCommand;
+
+			return null;
+		}
+
+		#endregion
 	}
 }

@@ -14,7 +14,13 @@ namespace XamStarterKit.Helpers.States
 
         public static readonly BindableProperty StateProperty = BindableProperty.Create(nameof(State), typeof(object), typeof(StateContainer), null, BindingMode.Default, null, StateChanged);
 
-        public static void Init()
+		public object State
+		{
+			get => GetValue(StateProperty);
+			set => SetValue(StateProperty, value);
+		}
+
+		public static void Init()
         {
             //for linker
         }
@@ -28,18 +34,6 @@ namespace XamStarterKit.Helpers.States
             }
         }
 
-        public object State
-        {
-            get
-            {
-                return GetValue(StateProperty);
-            }
-            set
-            {
-                SetValue(StateProperty, value);
-            }
-        }
-
         private async Task ChooseStateProperty(object newValue)
         {
             if (Conditions == null && Conditions?.Count == 0 || newValue == null)
@@ -50,27 +44,25 @@ namespace XamStarterKit.Helpers.States
 
             try
             {
-                foreach (var stateCondition in Conditions.Where(stateCondition => stateCondition.State != null && stateCondition.State.ToString().Equals(newValue.ToString())))
+                var stateCondition = Conditions.FirstOrDefault(q => q.State != null && q.State.ToString().Equals(newValue?.ToString()));
+				if (stateCondition == null)
+					return;
+
+                if (Content != null)
                 {
-                    if (Content != null)
-                    {
-                        await Content.FadeTo(0, 100U);
-                        Content.IsVisible = false;
-                        await Task.Delay(30); 
-                    }
-
-                    stateCondition.Content.Opacity = 0;
-                    Content = stateCondition.Content;
-                    Content.IsVisible = true;
-                    await Content.FadeTo(1);
-
-                    break;
+                    await Content.FadeTo(0, 100U);
+                    Content.IsVisible = false;
+                    await Task.Delay(30); 
                 }
+                stateCondition.Content.Opacity = 0;
+                Content = stateCondition.Content;
+                Content.IsVisible = true;
+                await Content.FadeTo(1);
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"StateContainer ChooseStateProperty {newValue} error: {e}");
             }
         }
-    }
+	}
 }
