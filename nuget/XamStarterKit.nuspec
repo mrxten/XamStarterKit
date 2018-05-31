@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>XamStarterKit</id>
-    <version>0.2.1-pre</version>
+    <version>0.3-pre</version>
     <authors>Vladislav Zhukov</authors>
     <owners>mrxten</owners>
     <licenseUrl>https://github.com/mrxten/XamStarterKit/blob/master/LICENSE</licenseUrl>
@@ -18,21 +18,7 @@
   </metadata>
 	<files>
 	  <!--NetStandard-->
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\netstandard1.6" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\netstandard1.6" />
-	  <!--Android-->
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\MonoAndroid" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\MonoAndroid" />
-	  <file src="..\src\XamStarterKit.Droid\bin\Release\XamStarterKit.Droid.dll" target="lib\MonoAndroid" />
-	  <file src="..\src\XamStarterKit.Droid\bin\Release\XamStarterKit.Droid.pdb" target="lib\MonoAndroid" />
-	  <!--IOS-->
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\MonoTouch" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.dll" target="lib\Xamarin.iOS" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\MonoTouch" />
-	  <file src="..\src\XamStarterKit\bin\Release\netstandard1.6\XamStarterKit.pdb" target="lib\Xamarin.iOS" />
-	  <file src="..\src\XamStarterKit.iOS\bin\Release\XamStarterKit.iOS.dll" target="lib\MonoTouch" />
-	  <file src="..\src\XamStarterKit.iOS\bin\Release\XamStarterKit.iOS.dll" target="lib\Xamarin.iOS" />
-	  <file src="..\src\XamStarterKit.iOS\bin\Release\XamStarterKit.iOS.pdb" target="lib\MonoTouch" />
-	  <file src="..\src\XamStarterKit.iOS\bin\Release\XamStarterKit.iOS.pdb" target="lib\Xamarin.iOS" />
+	  <file src="..\src\XamStarterKit\bin\Release\netstandard2.0\XamStarterKit.dll" target="lib\netstandard2.0" />
+	  <file src="..\src\XamStarterKit\bin\Release\netstandard2.0\XamStarterKit.pdb" target="lib\netstandard2.0" />
 	</files>
 </package>
