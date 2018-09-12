@@ -10,7 +10,7 @@ namespace XamStarterKit.Test {
         public App() {
             InitializeComponent();
 
-            var nav = new KitNavigationService<IBasePage, BaseViewModel>(new LinearNavigationController());
+            var nav = new LinearNavigationService<IBasePage, BaseViewModel>();
 
             MainPage = nav.SetRoot(new NavigationPushInfo {
                 To = AppPages.First
@@ -38,7 +38,7 @@ namespace XamStarterKit.Test {
                 await nav.Push(new NavigationPushInfo {
                     To = AppPages.Third,
                     Mode = NavigationMode.Modal,
-                    NewNavigation = true
+                    Argument = true
                 });
                 await Task.Delay(1000);
                 await nav.Push(new NavigationPushInfo {
