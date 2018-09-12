@@ -5,10 +5,8 @@ using System.Globalization;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-namespace XamStarterKit.Localization
-{
-    public class DynamicLocalize : INotifyPropertyChanged, IDisposable
-    {
+namespace XamStarterKit.Localization {
+    public class DynamicLocalize : INotifyPropertyChanged, IDisposable {
         private static ResourceManager _resourceManager;
 
         private static CultureInfo _ci;
@@ -18,10 +16,8 @@ namespace XamStarterKit.Localization
         public event PropertyChangedEventHandler PropertyChanged;
 
         [IndexerName("Index")]
-        public string this[string name]
-        {
-            get
-            {
+        public string this[string name] {
+            get {
                 var str = _resourceManager.GetString(name, _ci);
 
                 if (str != null)
@@ -33,38 +29,31 @@ namespace XamStarterKit.Localization
             }
         }
 
-        public static void Init(ResourceManager manager, CultureInfo cultureInfo)
-        {
+        public static void Init(ResourceManager manager, CultureInfo cultureInfo) {
             _resourceManager = manager;
             _ci = cultureInfo;
             _members = new Dictionary<DynamicLocalize, HashSet<string>>();
         }
 
-        public static void UpdateCulture(CultureInfo cultureInfo)
-        {
+        public static void UpdateCulture(CultureInfo cultureInfo) {
             _ci = cultureInfo;
             NotifyChanged();
         }
 
-        public static void NotifyChanged()
-        {
-            foreach (var member in _members)
-            {
-                foreach (var prop in member.Value)
-                {
+        public static void NotifyChanged() {
+            foreach (var member in _members) {
+                foreach (var prop in member.Value) {
                     member.Key.OnPropertyChanged(prop);
                 }
             }
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             if (_members.ContainsKey(this))
                 _members.Remove(this);
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
