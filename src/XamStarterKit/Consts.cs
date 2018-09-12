@@ -1,10 +1,5 @@
 ﻿using System;
 namespace XamStarterKit {
-    public static class KitMessages {
-        public const string NavigationPushMessage = nameof(NavigationPushMessage);
-        public const string NavigationPopMessage = nameof(NavigationPopMessage);
-    }
-
     public enum NavigationMode {
         Normal,
         Modal,

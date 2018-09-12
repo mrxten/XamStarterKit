@@ -3,8 +3,8 @@ using Xamarin.Forms;
 
 namespace XamStarterKit.Navigation {
     public interface INavigationController {
-        INavigation GetGlobalNavigation(Page mainPage);
-        INavigation GetTopNavigation(Page mainPage, object parameter = null);
+        INavigation GetRootNavigation(Page mainPage);
+        INavigation GetPickNavigation(Page mainPage, object parameter = null);
 
         void PushPage(Page page);
         void PopPage(Page page);

@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using XamStarterKit.Helpers;
-using static XamStarterKit.KitMessages;
 
 namespace XamStarterKit.ViewModels {
     public class KitViewModel : Bindable, IDisposable {

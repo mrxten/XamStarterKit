@@ -1,6 +1,6 @@
 ﻿using XamStarterKit.ViewModels;
 using System;
-namespace XamStarterKit.Pages.Abstractions {
+namespace XamStarterKit.Pages {
     public interface IKitPage : IDisposable {
         KitViewModel ViewModel { get; }
 

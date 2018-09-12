@@ -6,28 +6,27 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamStarterKit.Helpers;
-using XamStarterKit.Pages.Abstractions;
+using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
 
 namespace XamStarterKit.Navigation {
     public class KitNavigationService<TPage, TModel>
         where TPage : IKitPage
         where TModel : KitViewModel {
-        public static KitNavigationService<TPage, TModel> Current { get; set; }
-
         protected INavigationController Controller { get; set; }
         protected Dictionary<string, Type> PageTypes { get; set; }
         protected Dictionary<string, Type> ViewModelTypes { get; set; }
-        protected NavigationPage RootPage { get; set; }
+        protected Page RootPage { get; set; }
 
-        KitNavigationService(INavigationController controller) {
+        public KitNavigationService(INavigationController controller) {
             Controller = controller ?? throw new ArgumentNullException(nameof(controller));
 
             PageTypes = GetAssemblyPageTypes();
             ViewModelTypes = GetAssemblyViewModelTypes();
         }
 
-        public virtual Page Init(NavigationPushInfo pushInfo) {
+        public virtual Page SetRoot(NavigationPushInfo pushInfo) {
+            Controller.PopAll();
             RootPage = new NavigationPage(GetInitializedPage(pushInfo));
             return RootPage;
         }
@@ -59,13 +58,23 @@ namespace XamStarterKit.Navigation {
 
         protected virtual Task<bool> PushRoot(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var globalNavigation = Controller.GetGlobalNavigation(RootPage);
+            var globalNavigation = Controller.GetRootNavigation(RootPage);
             Device.BeginInvokeOnMainThread(async () => {
                 try {
                     if (globalNavigation.NavigationStack.Any()) {
-                        globalNavigation.InsertPageBefore(newPage, globalNavigation.NavigationStack.FirstOrDefault());
+                        var hasBackButton = NavigationPage.GetHasBackButton(newPage);
+                        NavigationPage.SetHasBackButton(newPage, false);
+                        await globalNavigation.PushAsync(newPage);
+                        NavigationPage.SetHasBackButton(newPage, hasBackButton);
+
+                        Controller.PushPage(newPage);
+                        foreach (var page in globalNavigation.NavigationStack.Where(p => p != newPage).ToList()) {
+                            globalNavigation.RemovePage(page);
+                        }
+                        foreach (var page in globalNavigation.ModalStack.ToList()) {
+                            globalNavigation.RemovePage(page);
+                        }
                         Controller.PopAll(newPage);
-                        await globalNavigation.PopToRootAsync();
                     }
                     pushInfo.OnCompletedTask?.TrySetResult(true);
                 }
@@ -80,7 +89,7 @@ namespace XamStarterKit.Navigation {
 
         protected virtual Task<bool> PushNormal(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var topNavigation = Controller.GetTopNavigation(RootPage);
+            var topNavigation = Controller.GetPickNavigation(RootPage);
             Device.BeginInvokeOnMainThread(async () => {
                 try {
                     await topNavigation.PushAsync(newPage);
@@ -98,19 +107,19 @@ namespace XamStarterKit.Navigation {
 
         protected virtual Task<bool> PushModal(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var topNavigation = Controller.GetTopNavigation(RootPage);
+            var topNavigation = Controller.GetPickNavigation(RootPage);
 
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    if (pushInfo.NewNavigationStack) {
+                    if (pushInfo.NewNavigation) {
                         await topNavigation.PushModalAsync(new NavigationPage(newPage));
-                        Controller.PushPage(newPage);
-                        pushInfo.OnCompletedTask?.TrySetResult(true);
                     }
                     else {
                         await topNavigation.PushModalAsync(newPage);
-                        pushInfo.OnCompletedTask?.TrySetResult(true);
                     }
+
+                    Controller.PushPage(newPage);
+                    pushInfo.OnCompletedTask?.TrySetResult(true);
                 }
                 catch (Exception e) {
                     Trace.WriteLine(e);
@@ -149,7 +158,7 @@ namespace XamStarterKit.Navigation {
         protected virtual Task<bool> PopModal(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = Controller.GetTopNavigation(RootPage);
+                    var navigation = Controller.GetPickNavigation(RootPage);
                     var page = await navigation.PopModalAsync();
                     if (page is NavigationPage navigationPage)
                         Controller.PopPage(navigationPage.CurrentPage);
@@ -169,7 +178,7 @@ namespace XamStarterKit.Navigation {
         protected virtual Task<bool> PopNormal(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = Controller.GetTopNavigation(RootPage);
+                    var navigation = Controller.GetPickNavigation(RootPage);
                     var page = await navigation.PopAsync();
                     Controller.PopPage(page);
                     popInfo.OnCompletedTask?.TrySetResult(true);
@@ -185,7 +194,9 @@ namespace XamStarterKit.Navigation {
         protected virtual Task<bool> PopRoot(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = Controller.GetGlobalNavigation(RootPage);
+                    var navigation = Controller.GetRootNavigation(RootPage);
+                    while (navigation.ModalStack.Count > 0)
+                        await navigation.PopModalAsync();
                     await navigation.PopToRootAsync();
                     Controller.PopAll(navigation.NavigationStack.First());
                     popInfo.OnCompletedTask?.TrySetResult(true);
@@ -197,8 +208,6 @@ namespace XamStarterKit.Navigation {
             });
             return popInfo.OnCompletedTask?.Task;
         }
-
-
 
         static string GetTypeBaseName(MemberInfo info) {
             if (info == null) throw new ArgumentNullException(nameof(info));
@@ -264,7 +273,7 @@ namespace XamStarterKit.Navigation {
         public Dictionary<string, object> DataToLoad { get; set; }
         public Dictionary<string, object> DataToPreload { get; set; }
         public NavigationMode Mode { get; set; } = NavigationMode.Normal;
-        public bool NewNavigationStack { get; set; }
+        public bool NewNavigation { get; set; }
         public object CustomData { get; set; }
         public TaskCompletionSource<bool> OnCompletedTask { get; set; } = new TaskCompletionSource<bool>();
     }

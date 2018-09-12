@@ -4,26 +4,20 @@ using System.Linq;
 using Xamarin.Forms;
 
 namespace XamStarterKit.Navigation {
-    public class KitNavigationController : INavigationController {
+    public class LinearNavigationController : INavigationController {
         public List<Page> PagesList { get; } = new List<Page>();
 
-        public virtual INavigation GetGlobalNavigation(Page mainPage) {
+        public virtual INavigation GetRootNavigation(Page mainPage) {
             return mainPage.Navigation;
         }
 
-        public virtual INavigation GetTopNavigation(Page mainPage, object parameter = null) {
+        public virtual INavigation GetPickNavigation(Page mainPage, object parameter = null) {
             INavigation topNavigation = null;
             if (mainPage is NavigationPage navigationPage) {
                 topNavigation = navigationPage.Navigation;
             }
 
             if (topNavigation == null) throw new ArgumentNullException(@"MainPage should be NavigationPage");
-
-            if (!topNavigation.ModalStack.Any(page => page is NavigationPage)) return topNavigation;
-
-            var navPage = topNavigation.ModalStack?.LastOrDefault(item => item is NavigationPage);
-            if (navPage != null) topNavigation = navPage.Navigation;
-
             return topNavigation;
         }
 
