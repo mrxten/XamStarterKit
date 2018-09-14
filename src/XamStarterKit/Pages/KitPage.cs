@@ -23,7 +23,6 @@ namespace XamStarterKit.Pages {
 
         protected override void OnParentSet() {
             base.OnParentSet();
-            var t = this;
             if (Parent != null) return;
             Dispose();
         }
