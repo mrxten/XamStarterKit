@@ -8,9 +8,7 @@ using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
 
 namespace XamStarterKit.Navigation {
-    public abstract class BaseNavigationService<TPage, TModel>
-        where TPage : IKitPage
-        where TModel : KitViewModel {
+    public abstract class BaseNavigationService<TAssebly> {
         protected Dictionary<string, Type> PageTypes { get; set; }
         protected Dictionary<string, Type> ViewModelTypes { get; set; }
         protected Page RootPage { get; set; }
@@ -73,15 +71,15 @@ namespace XamStarterKit.Navigation {
             return info.Name.Replace(@"Page", "").Replace(@"ViewModel", "");
         }
 
-        protected static Dictionary<string, Type> GetAssemblyPageTypes() {
-            return typeof(TPage).GetTypeInfo().Assembly.DefinedTypes
+        protected Dictionary<string, Type> GetAssemblyPageTypes() {
+            return typeof(TAssebly).GetTypeInfo().Assembly.DefinedTypes
                 .Where(ti =>
                        ti.IsClass && !ti.IsAbstract && ti.Name.EndsWith(@"Page", StringComparison.Ordinal) && ti.BaseType.Name.Contains(@"Page"))
                 .ToDictionary(GetTypeBaseName, ti => ti.AsType());
         }
 
-        protected static Dictionary<string, Type> GetAssemblyViewModelTypes() {
-            return typeof(TModel).GetTypeInfo().Assembly.DefinedTypes.Where(
+        protected Dictionary<string, Type> GetAssemblyViewModelTypes() {
+            return typeof(TAssebly).GetTypeInfo().Assembly.DefinedTypes.Where(
                 ti => ti.IsClass && !ti.IsAbstract && ti.Name.EndsWith(@"ViewModel", StringComparison.Ordinal) &&
                       ti.BaseType.Name.Contains(@"ViewModel"))
                 .ToDictionary(GetTypeBaseName, ti => ti.AsType());
@@ -90,10 +88,8 @@ namespace XamStarterKit.Navigation {
         protected Page GetInitializedPage(NavigationPushInfo navigationPushInfo) {
             var page = GetPage(navigationPushInfo.To.ToString());
             var viewModel = GetViewModel(navigationPushInfo.To.ToString());
-            viewModel.DataToLoad = navigationPushInfo.DataToLoad;
-            viewModel.DataToPreload = navigationPushInfo.DataToPreload;
+            viewModel.NavigationParams = navigationPushInfo.NavigationParams;
             page.BindingContext = viewModel;
-            viewModel.StartPreloadingData();
             return page;
         }
 
@@ -137,8 +133,7 @@ namespace XamStarterKit.Navigation {
 
     public class NavigationPushInfo {
         public object To { get; set; }
-        public Dictionary<string, object> DataToLoad { get; set; }
-        public Dictionary<string, object> DataToPreload { get; set; }
+        public Dictionary<string, object> NavigationParams { get; set; }
         public NavigationMode Mode { get; set; } = NavigationMode.Normal;
         public TaskCompletionSource<bool> OnCompletedTask { get; set; } = new TaskCompletionSource<bool>();
         public object Argument { get; set; }

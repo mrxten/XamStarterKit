@@ -66,5 +66,11 @@ namespace XamStarterKit.Extensions.FastUI {
                 btn.Bind(Button.CommandParameterProperty, commandParameterPath);
             return btn;
         }
+
+        public static T ToVariable<T>(this T self, out T variable) 
+            where T :View  {
+            variable = self;
+            return self;
+        }
     }
 }

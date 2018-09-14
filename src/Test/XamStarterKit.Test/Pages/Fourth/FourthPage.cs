@@ -1,10 +1,11 @@
 ﻿using System;
 
 using Xamarin.Forms;
+using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
 
 namespace XamStarterKit.Test.Pages.Fourth {
-    public class FourthPage : ContentPage, IBasePage {
+    public class FourthPage : KitPage {
         public FourthPage() {
             Title = "4";
             Content = new StackLayout {

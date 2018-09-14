@@ -10,7 +10,7 @@ namespace XamStarterKit.Test {
         public App() {
             InitializeComponent();
 
-            var nav = new LinearNavigationService<IBasePage, BaseViewModel>();
+            var nav = new LinearNavigationService<App>();
 
             MainPage = nav.SetRoot(new NavigationPushInfo {
                 To = AppPages.First

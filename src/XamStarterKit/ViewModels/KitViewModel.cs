@@ -37,51 +37,30 @@ namespace XamStarterKit.ViewModels {
 
         #region Data
 
-        public Dictionary<string, object> DataToPreload {
-            get => Get<Dictionary<string, object>>();
-            set => Set(value);
-        }
-
-        public Dictionary<string, object> DataToLoad {
+        public Dictionary<string, object> NavigationParams {
             get => Get<Dictionary<string, object>>();
             set => Set(value);
         }
 
         public bool IsLoadDataStarted {
             get => Get<bool>();
-            protected internal set => Set(value);
+            protected set => Set(value);
         }
 
-        public bool IsPreloadDataStarted {
-            get => Get<bool>();
-            protected internal set => Set(value);
-        }
-
-        public void StartLoadingData() {
-            if (IsLoadDataStarted) return;
+        public void StartLoadData() {
+            if (IsLoadDataStarted)
+                return;
             IsLoadDataStarted = true;
-
-            Task.Run(LoadingDataAsync, CancellationToken);
+            DataLoadAsync();
         }
 
-        public void StartPreloadingData() {
-            if (IsPreloadDataStarted) return;
-            IsPreloadDataStarted = true;
-
-            PreloadingData();
-        }
-
-        protected virtual Task LoadingDataAsync() {
+        protected virtual Task DataLoadAsync() {
             return Task.FromResult(0);
         }
 
-        protected virtual void PreloadingData() {
-
-        }
-
-        bool GetContainsValue<T>(Dictionary<string, object> dictionary, string key, out T value) {
-            if (dictionary != null && dictionary.ContainsKey(key)) {
-                value = (T)dictionary[key];
+        protected bool GetContainsValue<T>(string key, out T value) {
+            if (NavigationParams != null && NavigationParams.ContainsKey(key) && NavigationParams[key] is T generic) {
+                value = generic;
                 return true;
             }
             value = default(T);

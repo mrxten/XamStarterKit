@@ -8,25 +8,22 @@ using Xamarin.Forms;
 using XamStarterKit.Helpers;
 using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
+using XamStarterKit.Extensions.FastUI;
 
 namespace XamStarterKit.Navigation {
-    public class LinearNavigationService<TPage, TModel> : BaseNavigationService<TPage, TModel>
-        where TPage : IKitPage
-        where TModel : KitViewModel {
-        public List<Page> PagesList { get; } = new List<Page>();
-
+    public class LinearNavigationService<TAssembly> : BaseNavigationService<TAssembly>  {
         public override Page SetRoot(NavigationPushInfo pushInfo) {
             RootPage = new NavigationPage(GetInitializedPage(pushInfo));
             return RootPage;
         }
 
-        protected virtual INavigation GetRootNavigation(Page rootPage) {
-            return rootPage.Navigation;
+        protected virtual INavigation GetRootNavigation() {
+            return RootPage.Navigation;
         }
 
-        protected virtual INavigation GetPickNavigation(Page rootPage, object parameter = null) {
+        protected virtual INavigation GetPickNavigation() {
             INavigation topNavigation = null;
-            if (rootPage is NavigationPage navigationPage) {
+            if (RootPage is NavigationPage navigationPage) {
                 topNavigation = navigationPage.Navigation;
             }
 
@@ -44,23 +41,26 @@ namespace XamStarterKit.Navigation {
 
         protected override Task<bool> PushRoot(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var globalNavigation = GetRootNavigation(RootPage);
+            var navigation = GetRootNavigation();
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    if (globalNavigation.NavigationStack.Any()) {
+                    if (navigation.NavigationStack.Any()) {
                         var hasBackButton = NavigationPage.GetHasBackButton(newPage);
                         NavigationPage.SetHasBackButton(newPage, false);
-                        await globalNavigation.PushAsync(newPage);
-                        NavigationPage.SetHasBackButton(newPage, hasBackButton);
+                        await navigation.PushAsync(newPage);
 
-                        PushPage(newPage);
-                        foreach (var page in globalNavigation.NavigationStack.Where(p => p != newPage).ToList()) {
-                            globalNavigation.RemovePage(page);
+                        while (navigation.ModalStack.Count > 0) {
+                            var page = await navigation.PopModalAsync(true);
+                            DisposeModalPage(page);
                         }
-                        foreach (var page in globalNavigation.ModalStack.ToList()) {
-                            globalNavigation.RemovePage(page);
+
+                        foreach (var page in navigation.NavigationStack.Where(p => p != newPage).ToList()) {
+                            navigation.RemovePage(page);
                         }
-                        PopAll(newPage);
+
+                        await navigation.PopToRootAsync();
+
+                        NavigationPage.SetHasBackButton(newPage, hasBackButton);
                     }
                     pushInfo.OnCompletedTask?.TrySetResult(true);
                 }
@@ -75,11 +75,10 @@ namespace XamStarterKit.Navigation {
 
         protected override Task<bool> PushNormal(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var topNavigation = GetPickNavigation(RootPage);
+            var topNavigation = GetPickNavigation();
             Device.BeginInvokeOnMainThread(async () => {
                 try {
                     await topNavigation.PushAsync(newPage);
-                    PushPage(newPage);
                     pushInfo.OnCompletedTask?.TrySetResult(true);
                 }
                 catch (Exception e) {
@@ -93,7 +92,7 @@ namespace XamStarterKit.Navigation {
 
         protected override Task<bool> PushModal(NavigationPushInfo pushInfo) {
             var newPage = GetInitializedPage(pushInfo);
-            var topNavigation = GetPickNavigation(RootPage);
+            var topNavigation = GetRootNavigation();
 
             Device.BeginInvokeOnMainThread(async () => {
                 try {
@@ -104,7 +103,6 @@ namespace XamStarterKit.Navigation {
                         await topNavigation.PushModalAsync(newPage);
                     }
 
-                    PushPage(newPage);
                     pushInfo.OnCompletedTask?.TrySetResult(true);
                 }
                 catch (Exception e) {
@@ -127,12 +125,9 @@ namespace XamStarterKit.Navigation {
         protected override Task<bool> PopModal(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = GetPickNavigation(RootPage);
+                    var navigation = GetPickNavigation();
                     var page = await navigation.PopModalAsync();
-                    if (page is NavigationPage navigationPage)
-                        PopPage(navigationPage.CurrentPage);
-                    else
-                        PopPage(page);
+                    DisposeModalPage(page);
 
                     popInfo.OnCompletedTask?.TrySetResult(true);
                 }
@@ -147,9 +142,8 @@ namespace XamStarterKit.Navigation {
         protected override Task<bool> PopNormal(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = GetPickNavigation(RootPage);
+                    var navigation = GetPickNavigation();
                     var page = await navigation.PopAsync();
-                    PopPage(page);
                     popInfo.OnCompletedTask?.TrySetResult(true);
                 }
                 catch (Exception e) {
@@ -163,11 +157,13 @@ namespace XamStarterKit.Navigation {
         protected override Task<bool> PopRoot(NavigationPopInfo popInfo) {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
-                    var navigation = GetRootNavigation(RootPage);
-                    while (navigation.ModalStack.Count > 0)
-                        await navigation.PopModalAsync();
+                    var navigation = GetRootNavigation();
+                    while (navigation.ModalStack.Count > 0) {
+                        var page = await navigation.PopModalAsync(true);
+                        DisposeModalPage(page);
+                    }
+
                     await navigation.PopToRootAsync();
-                    PopAll(navigation.NavigationStack.First());
                     popInfo.OnCompletedTask?.TrySetResult(true);
                 }
                 catch (Exception e) {
@@ -178,22 +174,10 @@ namespace XamStarterKit.Navigation {
             return popInfo.OnCompletedTask?.Task;
         }
 
-        void PopPage(Page page) {
-            PagesList.Remove(page);
-            DisposePage(page);
-        }
-
-        void PushPage(Page page) {
-            PagesList.Add(page);
-        }
-
-        void PopAll(Page exceptPage = null) {
-            foreach (var page in PagesList) {
-                if (page == exceptPage)
-                    continue;
-                PagesList.Remove(page);
-                DisposePage(page);
-            }
+        void DisposeModalPage(Page page) {
+            //bug XF
+            if (page is NavigationPage navPage && navPage?.CurrentPage is IDisposable disposable)
+                disposable?.Dispose();
         }
     }
 }

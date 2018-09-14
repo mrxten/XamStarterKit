@@ -1,10 +1,11 @@
 ﻿using System;
 
 using Xamarin.Forms;
+using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
 
 namespace XamStarterKit.Test.Pages.Second {
-    public class SecondPage : ContentPage, IBasePage {
+    public class SecondPage : KitPage {
         public SecondPage() {
             Title = "2";
             Content = new StackLayout {
