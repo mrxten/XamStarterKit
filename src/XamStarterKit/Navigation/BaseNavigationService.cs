@@ -66,6 +66,14 @@ namespace XamStarterKit.Navigation {
         protected abstract Task<bool> PopCustom(NavigationPopInfo popInfo);
         protected abstract Task<bool> PopRoot(NavigationPopInfo popInfo);
 
+        public virtual Page GetInitializedPage(NavigationPushInfo navigationPushInfo) {
+            var page = GetPage(navigationPushInfo.To?.ToString());
+            var viewModel = GetViewModel(navigationPushInfo.To?.ToString());
+            viewModel.NavigationParams = navigationPushInfo.NavigationParams;
+            page.BindingContext = viewModel;
+            return page;
+        }
+
         protected static string GetTypeBaseName(MemberInfo info) {
             if (info == null) throw new ArgumentNullException(nameof(info));
             return info.Name.Replace(@"Page", "").Replace(@"ViewModel", "");
@@ -83,14 +91,6 @@ namespace XamStarterKit.Navigation {
                 ti => ti.IsClass && !ti.IsAbstract && ti.Name.EndsWith(@"ViewModel", StringComparison.Ordinal) &&
                       ti.BaseType.Name.Contains(@"ViewModel"))
                 .ToDictionary(GetTypeBaseName, ti => ti.AsType());
-        }
-
-        protected Page GetInitializedPage(NavigationPushInfo navigationPushInfo) {
-            var page = GetPage(navigationPushInfo.To.ToString());
-            var viewModel = GetViewModel(navigationPushInfo.To.ToString());
-            viewModel.NavigationParams = navigationPushInfo.NavigationParams;
-            page.BindingContext = viewModel;
-            return page;
         }
 
         protected Page GetPage(string pageName) {
