@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using XamStarterKit.Pages;
 using XamStarterKit.ViewModels;
+using XamStarterKit.Helpers;
 
 namespace XamStarterKit.Navigation {
     public abstract class BaseNavigationService<TAssebly> {
@@ -16,6 +17,18 @@ namespace XamStarterKit.Navigation {
         protected BaseNavigationService() {
             PageTypes = GetAssemblyPageTypes();
             ViewModelTypes = GetAssemblyViewModelTypes();
+            MessageBus.Subscribe<NavigationPushInfo>(this, KitMessage.NavigationPush, PushCallback);
+            MessageBus.Subscribe<NavigationPopInfo>(this, KitMessage.NavigationPop, PopCallback);
+        }
+
+        void PushCallback(NavigationPushInfo pushInfo) {
+            if (pushInfo == null) throw new ArgumentNullException(nameof(pushInfo));
+            Push(pushInfo);
+        }
+
+        void PopCallback(NavigationPopInfo popInfo) {
+            if (popInfo == null) throw new ArgumentNullException(nameof(popInfo));
+            Pop(popInfo);
         }
 
         public abstract Page SetRoot(NavigationPushInfo pushInfo);
@@ -141,7 +154,6 @@ namespace XamStarterKit.Navigation {
 
     public class NavigationPopInfo {
         public NavigationMode Mode { get; set; } = NavigationMode.Normal;
-        public object CustomData { get; set; }
         public TaskCompletionSource<bool> OnCompletedTask { get; set; } = new TaskCompletionSource<bool>();
         public object Argument { get; set; }
     }

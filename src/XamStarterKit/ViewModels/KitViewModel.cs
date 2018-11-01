@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using XamStarterKit.Helpers;
+using Xamarin.Forms;
+using XamStarterKit.Navigation;
 
 namespace XamStarterKit.ViewModels {
     public class KitViewModel : Bindable, IDisposable {
@@ -33,6 +35,40 @@ namespace XamStarterKit.ViewModels {
 
         ~KitViewModel() {
             Dispose(false);
+        }
+
+        protected virtual Task<bool> NavigateTo(
+            object toIdentifier,
+            NavigationMode mode = NavigationMode.Normal,
+            Dictionary<string, object> navParams = null,
+            object argument = null) {
+
+            var completedTask = new TaskCompletionSource<bool>();
+            MessageBus.SendMessage(
+                KitMessage.NavigationPush,
+                new NavigationPushInfo {
+                    To = toIdentifier.ToString(),
+                    Mode = mode,
+                    NavigationParams = navParams,
+                    Argument = argument,
+                    OnCompletedTask = completedTask,
+                });
+            return completedTask.Task;
+        }
+
+        protected virtual Task<bool> NavigateBack(
+            NavigationMode mode = NavigationMode.Normal,
+            object argument = null) {
+
+            var completedTask = new TaskCompletionSource<bool>();
+            MessageBus.SendMessage(
+                KitMessage.NavigationPop,
+                new NavigationPopInfo {
+                    Mode = mode,
+                    Argument = argument,
+                    OnCompletedTask = completedTask,
+                });
+            return completedTask.Task;
         }
 
         #region Data
@@ -82,6 +118,17 @@ namespace XamStarterKit.ViewModels {
             return GetCommand(propertyName) as RelayCommand ??
                    SaveCommand(new RelayCommand(task, canExecute), propertyName) as
                        RelayCommand;
+        }
+
+        protected Command MakeCommand(Action<object> task, [CallerMemberName] string propertyName = null) {
+            return GetCommand(propertyName) as Command ??
+                   SaveCommand(new Command(task), propertyName) as
+                       Command;
+        }
+        protected Command MakeCommand(Action task, [CallerMemberName] string propertyName = null) {
+            return GetCommand(propertyName) as Command ??
+                   SaveCommand(new Command(task), propertyName) as
+                       Command;
         }
 
         ICommand SaveCommand(ICommand command, string propertyName) {

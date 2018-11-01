@@ -15,4 +15,9 @@ namespace XamStarterKit {
         Normal,
         Error
     }
+
+    public enum KitMessage {
+        NavigationPush,
+        NavigationPop
+    }
 }
