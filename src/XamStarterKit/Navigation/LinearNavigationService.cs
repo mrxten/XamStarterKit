@@ -11,7 +11,7 @@ using XamStarterKit.ViewModels;
 using XamStarterKit.Extensions.FastUI;
 
 namespace XamStarterKit.Navigation {
-    public class LinearNavigationService<TAssembly> : BaseNavigationService<TAssembly>  {
+    public class LinearNavigationService<TAssembly> : BaseNavigationService<TAssembly> {
         public override Page SetRoot(NavigationPushInfo pushInfo) {
             RootPage = new NavigationPage(GetInitializedPage(pushInfo));
             return RootPage;
@@ -47,20 +47,18 @@ namespace XamStarterKit.Navigation {
             Device.BeginInvokeOnMainThread(async () => {
                 try {
                     if (navigation.NavigationStack.Any()) {
-                        var hasBackButton = NavigationPage.GetHasBackButton(newPage);
-                        NavigationPage.SetHasBackButton(newPage, false);
-                        await navigation.PushAsync(newPage);
-
                         while (navigation.ModalStack.Count > 0) {
                             var page = await navigation.PopModalAsync(true);
                             DisposeModalPage(page);
                         }
 
+                        var hasBackButton = NavigationPage.GetHasBackButton(newPage);
+                        NavigationPage.SetHasBackButton(newPage, false);
+                        await navigation.PushAsync(newPage);
+
                         foreach (var page in navigation.NavigationStack.Where(p => p != newPage).ToList()) {
                             navigation.RemovePage(page);
                         }
-
-                        await navigation.PopToRootAsync();
 
                         NavigationPage.SetHasBackButton(newPage, hasBackButton);
                     }

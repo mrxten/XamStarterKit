@@ -109,25 +109,28 @@ namespace XamStarterKit.ViewModels {
 
         readonly ConcurrentDictionary<string, ICommand> _cachedCommands = new ConcurrentDictionary<string, ICommand>();
 
-        protected RelayCommand MakeCommand(Func<object, Task> task, bool canExecute = true, [CallerMemberName] string propertyName = null) {
-            return GetCommand(propertyName) as RelayCommand ??
-                   SaveCommand(new RelayCommand(task, canExecute), propertyName) as
-                       RelayCommand;
-        }
-        protected RelayCommand MakeCommand(Func<Task> task, bool canExecute = true, [CallerMemberName] string propertyName = null) {
+
+        protected RelayCommand MakeCommand(Func<Task> task, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as RelayCommand ??
                    SaveCommand(new RelayCommand(task, canExecute), propertyName) as
                        RelayCommand;
         }
 
-        protected Command MakeCommand(Action<object> task, [CallerMemberName] string propertyName = null) {
+        protected RelayCommand MakeCommand(Func<object, Task> task, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null) {
+            return GetCommand(propertyName) as RelayCommand ??
+                   SaveCommand(new RelayCommand(task, canExecute), propertyName) as
+                       RelayCommand;
+        }
+
+        protected Command MakeCommand(Action task, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as Command ??
-                   SaveCommand(new Command(task), propertyName) as
+                   SaveCommand(new Command(task, canExecute), propertyName) as
                        Command;
         }
-        protected Command MakeCommand(Action task, [CallerMemberName] string propertyName = null) {
+
+        protected Command MakeCommand(Action<object> task, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as Command ??
-                   SaveCommand(new Command(task), propertyName) as
+                   SaveCommand(new Command(task, canExecute), propertyName) as
                        Command;
         }
 
