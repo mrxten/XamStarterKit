@@ -75,7 +75,14 @@ namespace XamStarterKit.ViewModels {
 
         public Dictionary<string, object> NavigationParams {
             get => Get<Dictionary<string, object>>();
-            set => Set(value);
+            set {
+                Set(value);
+                SetNavigationParams();
+            }
+        }
+
+        protected virtual void SetNavigationParams() {
+
         }
 
         public bool IsLoadDataStarted {

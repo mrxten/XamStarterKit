@@ -5,12 +5,11 @@ using System.Threading.Tasks;
 
 namespace XamStarterKit.Pages {
     public class KitPage : ContentPage, IDisposable {
-        KitViewModel ViewModel { get; }
+        protected KitViewModel ViewModel => BindingContext as KitViewModel;
 
         protected override void OnAppearing() {
             base.OnAppearing();
             ViewModel?.StartLoadData();
-
         }
 
         protected override bool OnBackButtonPressed() {
