@@ -117,13 +117,13 @@ namespace XamStarterKit.ViewModels {
         readonly ConcurrentDictionary<string, ICommand> _cachedCommands = new ConcurrentDictionary<string, ICommand>();
 
 
-        protected RelayCommand MakeCommand(Func<Task> task, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null) {
+        protected RelayCommand MakeRelayCommand(Func<Task> task, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as RelayCommand ??
                    SaveCommand(new RelayCommand(task, canExecute), propertyName) as
                        RelayCommand;
         }
 
-        protected RelayCommand MakeCommand(Func<object, Task> task, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null) {
+        protected RelayCommand MakeRelayCommand(Func<object, Task> task, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as RelayCommand ??
                    SaveCommand(new RelayCommand(task, canExecute), propertyName) as
                        RelayCommand;

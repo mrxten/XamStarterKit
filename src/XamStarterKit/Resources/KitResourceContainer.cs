@@ -42,14 +42,14 @@ namespace XamStarterKit.Resources {
 
         protected static readonly ConcurrentDictionary<string, Style> CachedStyles = new ConcurrentDictionary<string, Style>();
 
-        protected static Style GetCachedStyle(Type targetType,
+        protected static Style MakeStyle(Type targetType,
             StyleSetters setters,
             Style baseStyle = null,
             [CallerMemberName] string propertyName = null) {
-            return GetCachedStyle(() => GetStyle(targetType, setters, baseStyle), propertyName);
+            return MakeStyle(() => GetStyle(targetType, setters, baseStyle), propertyName);
         }
 
-        protected static Style GetCachedStyle(Func<Style> styleFunc, [CallerMemberName] string propertyName = null) {
+        protected static Style MakeStyle(Func<Style> styleFunc, [CallerMemberName] string propertyName = null) {
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentNullException(nameof(propertyName));
 
@@ -62,7 +62,7 @@ namespace XamStarterKit.Resources {
             throw new ArgumentOutOfRangeException(nameof(propertyName));
         }
 
-        protected static Style GetStyle(Type targetType, StyleSetters setters, Style baseStyle = null) {
+        static Style GetStyle(Type targetType, StyleSetters setters, Style baseStyle = null) {
             var style = new Style(targetType);
             if (baseStyle != null)
                 style.BasedOn = baseStyle;

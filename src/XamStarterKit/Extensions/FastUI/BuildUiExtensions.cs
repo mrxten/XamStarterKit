@@ -21,7 +21,7 @@ namespace XamStarterKit.Extensions.FastUI {
            object converterParameter = null,
            string stringFormat = null,
            object source = null)
-            where T : View {
+            where T : BindableObject {
             var binding = new Binding(path, mode, converter, converterParameter, stringFormat, source);
             view.SetBinding(prop, binding);
             return view;
@@ -68,7 +68,7 @@ namespace XamStarterKit.Extensions.FastUI {
         }
 
         public static T ToVariable<T>(this T self, out T variable) 
-            where T :View  {
+            where T : class {
             variable = self;
             return self;
         }

@@ -28,7 +28,6 @@ namespace XamStarterKit.Pages {
 
         public virtual void Dispose() {
             ViewModel?.Dispose();
-            BindingContext = null;
         }
     }
 }

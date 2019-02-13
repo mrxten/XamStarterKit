@@ -21,24 +21,24 @@ namespace XamStarterKit.Extensions.FastUI {
             return rowDefinitionCollection;
         }
 
-        public static View SetGridRowSpan(this View view, int value) {
-            Grid.SetRowSpan(view, value);
-            return view;
+        public static T SetGridRowSpan<T>(this T bo, int value) where T : BindableObject {
+            Grid.SetRowSpan(bo, value);
+            return bo;
         }
 
-        public static View SetGridColumn(this View view, int value) {
-            Grid.SetColumn(view, value);
-            return view;
+        public static T SetGridColumn<T>(this T bo, int value) where T : BindableObject {
+            Grid.SetColumn(bo, value);
+            return bo;
         }
 
-        public static View SetGridColumnSpan(this View view, int value) {
-            Grid.SetColumnSpan(view, value);
-            return view;
+        public static T SetGridColumnSpan<T>(this T bo, int value) where T : BindableObject {
+            Grid.SetColumnSpan(bo, value);
+            return bo;
         }
 
-        public static View SetGridRow(this View view, int value) {
-            Grid.SetRow(view, value);
-            return view;
+        public static T SetGridRow<T>(this T bo, int value) where T : BindableObject {
+            Grid.SetRow(bo, value);
+            return bo;
         }
 
         public static Grid SetColumnDefinition(this Grid grid, params GridLength[] definitions) {

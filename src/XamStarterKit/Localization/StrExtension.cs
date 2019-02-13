@@ -6,7 +6,7 @@ using Xamarin.Forms.Xaml;
 
 namespace XamStarterKit.Localization {
     [ContentProperty("Text")]
-    public class TranslateMarkupExtension : IMarkupExtension {
+    public class StrExtension : IMarkupExtension {
         static CultureInfo _ci;
         static ResourceManager _resourceManager;
 
