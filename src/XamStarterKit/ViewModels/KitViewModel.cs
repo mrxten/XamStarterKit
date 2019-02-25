@@ -131,13 +131,13 @@ namespace XamStarterKit.ViewModels {
 
         protected Command MakeCommand(Action task, Func<bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as Command ??
-                   SaveCommand(new Command(task, canExecute), propertyName) as
+                   SaveCommand(canExecute == null ? new Command(task) : new Command(task, canExecute), propertyName) as
                        Command;
         }
 
         protected Command MakeCommand(Action<object> task, Func<object, bool> canExecute = null, [CallerMemberName] string propertyName = null) {
             return GetCommand(propertyName) as Command ??
-                   SaveCommand(new Command(task, canExecute), propertyName) as
+                   SaveCommand(canExecute == null ? new Command(task) : new Command(task, canExecute), propertyName) as
                        Command;
         }
 
