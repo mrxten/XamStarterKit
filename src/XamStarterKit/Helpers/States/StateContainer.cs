@@ -8,14 +8,30 @@ using Xamarin.Forms;
 namespace XamStarterKit.Helpers.States {
     [ContentProperty("Conditions")]
     public class StateContainer : ContentView {
-        public static readonly BindableProperty ConditionsProperty = BindableProperty.Create(nameof(Conditions), typeof(IList<StateCondition>), typeof(StateContainer), null, BindingMode.Default, null, CurrentViewPropertyChanged);
+        public static readonly BindableProperty ConditionsProperty =
+            BindableProperty.Create(
+                nameof(Conditions),
+                typeof(IList<StateCondition>),
+                typeof(StateContainer),
+                new List<StateCondition>(),
+                BindingMode.Default,
+                null,
+                CurrentViewPropertyChanged);
 
         public IList<StateCondition> Conditions {
             get => (IList<StateCondition>)GetValue(ConditionsProperty);
             set => SetValue(ConditionsProperty, value);
         }
 
-        public static readonly BindableProperty StateProperty = BindableProperty.Create(nameof(State), typeof(object), typeof(StateContainer), null, BindingMode.Default, null, CurrentViewPropertyChanged);
+        public static readonly BindableProperty StateProperty =
+            BindableProperty.Create(
+                nameof(State),
+                typeof(object),
+                typeof(StateContainer),
+                null,
+                BindingMode.Default,
+                null,
+                CurrentViewPropertyChanged);
 
         public object State {
             get => GetValue(StateProperty);
