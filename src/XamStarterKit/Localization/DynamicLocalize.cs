@@ -7,11 +7,9 @@ using System.Runtime.CompilerServices;
 
 namespace XamStarterKit.Localization {
     public class DynamicLocalize : INotifyPropertyChanged, IDisposable {
-        private static ResourceManager _resourceManager;
-
-        private static CultureInfo _ci;
-
-        private static Dictionary<DynamicLocalize, HashSet<string>> _members;
+        static ResourceManager _resourceManager;
+        static CultureInfo _ci;
+        static Dictionary<DynamicLocalize, HashSet<string>> _members;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -19,13 +17,13 @@ namespace XamStarterKit.Localization {
         public string this[string name] {
             get {
                 var str = _resourceManager.GetString(name, _ci);
+                if (str == null) return name;
 
-                if (str != null)
-                    if (_members.ContainsKey(this))
-                        _members[this].Add($"Index[{name}]");
-                    else
-                        _members.Add(this, new HashSet<string>(new[] { $"Index[{name}]" }));
-                return str ?? name;
+                if (_members.ContainsKey(this))
+                    _members[this].Add($"Index[{name}]");
+                else
+                    _members.Add(this, new HashSet<string>(new[] { $"Index[{name}]" }));
+                return str;
             }
         }
 

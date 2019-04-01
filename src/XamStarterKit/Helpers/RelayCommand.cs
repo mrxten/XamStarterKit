@@ -1,9 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Forms.Internals;
-using Xamarin.Forms;
 
 namespace XamStarterKit.Helpers {
     public class RelayCommand : ICommand {
@@ -11,8 +8,8 @@ namespace XamStarterKit.Helpers {
         readonly Func<object, Task> _tskParam;
         readonly Func<Task> _tsk;
 
-        private readonly Func<bool> _canExecute;
-        private readonly Func<object, bool> _canExecuteParam;
+        readonly Func<bool> _canExecute;
+        readonly Func<object, bool> _canExecuteParam;
 
         public RelayCommand(Func<Task> func, Func<bool> canExecute = null) {
             _tsk = func ?? throw new ArgumentNullException(nameof(func));
@@ -38,9 +35,7 @@ namespace XamStarterKit.Helpers {
         public bool CanExecute(object parameter) {
             if (_canExecute != null)
                 return _canExecute.Invoke();
-            if (_canExecuteParam != null)
-                return _canExecuteParam.Invoke(parameter);
-            return true;
+            return _canExecuteParam == null || _canExecuteParam.Invoke(parameter);
         }
 
         public virtual async void Execute(object parameter) {

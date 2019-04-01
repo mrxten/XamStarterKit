@@ -3,11 +3,10 @@ using Xamarin.Forms;
 
 namespace XamStarterKit.Helpers {
     public class MessageBus {
-        private static readonly Lazy<MessageBus> LazyInstance = new Lazy<MessageBus>(() => new MessageBus(), true);
+        static readonly Lazy<MessageBus> LazyInstance = new Lazy<MessageBus>(() => new MessageBus(), true);
+        static MessageBus Instance => LazyInstance.Value;
 
-        private static MessageBus Instance => LazyInstance.Value;
-
-        private MessageBus() {
+        MessageBus() {
         }
 
         public static void SendMessage(object message) {
@@ -26,6 +25,20 @@ namespace XamStarterKit.Helpers {
 
         public static void Subscribe<TArgs>(object subscriber, object message, Action<TArgs> callback) {
             MessagingCenter.Subscribe<MessageBus, TArgs>(subscriber, message.ToString(), (bus, args) => {
+                callback?.Invoke(args);
+            });
+        }
+
+        public static void SubscribeForOnePush(object subscriber, object message, Action callback) {
+            MessagingCenter.Subscribe<MessageBus>(subscriber, message.ToString(), (bus) => {
+                Unsubscribe(subscriber, message);
+                callback?.Invoke();
+            });
+        }
+
+        public static void SubscribeForOnePush<TArgs>(object subscriber, object message, Action<TArgs> callback) {
+            MessagingCenter.Subscribe<MessageBus, TArgs>(subscriber, message.ToString(), (bus, args) => {
+                Unsubscribe<TArgs>(subscriber, message);
                 callback?.Invoke(args);
             });
         }

@@ -33,12 +33,12 @@ namespace XamStarterKit.Navigation {
 
         protected override Task<bool> PushPopUp(NavigationPushInfo pushInfo) {
             pushInfo.OnCompletedTask?.TrySetResult(false);
-            return pushInfo.OnCompletedTask.Task;
+            return pushInfo.OnCompletedTask?.Task;
         }
 
         protected override Task<bool> PushCustom(NavigationPushInfo pushInfo) {
             pushInfo.OnCompletedTask?.TrySetResult(false);
-            return pushInfo.OnCompletedTask.Task;
+            return pushInfo.OnCompletedTask?.Task;
         }
 
         protected override Task<bool> PushRoot(NavigationPushInfo pushInfo) {
@@ -116,12 +116,12 @@ namespace XamStarterKit.Navigation {
 
         protected override Task<bool> PopPopUp(NavigationPopInfo popInfo) {
             popInfo.OnCompletedTask?.TrySetResult(false);
-            return popInfo.OnCompletedTask.Task;
+            return popInfo.OnCompletedTask?.Task;
         }
 
         protected override Task<bool> PopCustom(NavigationPopInfo popInfo) {
             popInfo.OnCompletedTask?.TrySetResult(false);
-            return popInfo.OnCompletedTask.Task;
+            return popInfo.OnCompletedTask?.Task;
         }
 
         protected override Task<bool> PopModal(NavigationPopInfo popInfo) {

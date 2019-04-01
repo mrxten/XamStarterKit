@@ -5,7 +5,7 @@ using XamStarterKit.Annotations;
 
 namespace XamStarterKit.Helpers {
     public class Bindable : INotifyPropertyChanged, INotifyPropertyChanging {
-        private readonly ConcurrentDictionary<string, object> _properties = new ConcurrentDictionary<string, object>();
+        readonly ConcurrentDictionary<string, object> _properties = new ConcurrentDictionary<string, object>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

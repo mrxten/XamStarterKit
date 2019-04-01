@@ -44,7 +44,7 @@ namespace XamStarterKit.Helpers.States {
             }
         }
 
-        private async Task ChooseStateProperty(object newValue) {
+        async Task ChooseStateProperty(object newValue) {
             if (Conditions == null && Conditions?.Count == 0 || newValue == null) {
                 return;
             }
