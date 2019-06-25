@@ -1,72 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace XamStarterKit.Helpers.States {
     [ContentProperty("Conditions")]
-    public class StateContainer : ContentView {
-        public static readonly BindableProperty ConditionsProperty =
-            BindableProperty.Create(
-                nameof(Conditions),
-                typeof(IList<StateCondition>),
-                typeof(StateContainer),
-                new List<StateCondition>(),
-                BindingMode.Default,
-                null,
-                CurrentViewPropertyChanged);
+    public class StateContainer : Grid {
+        readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public IList<StateCondition> Conditions {
-            get => (IList<StateCondition>)GetValue(ConditionsProperty);
-            set => SetValue(ConditionsProperty, value);
+        public StateContainer() {
+            _conditions.CollectionChanged += async (sender, args) => {
+                await _semaphoreSlim.WaitAsync();
+                var scState = GetState(this);
+                if (args.NewItems == null) return;
+
+                foreach (var item in args.NewItems) {
+                    if (!(item is View view)) continue;
+                    var viewState = GetState(view);
+                    view.IsVisible = viewState != null && viewState.ToString() == scState?.ToString();
+                    Children.Add(view);
+                }
+
+                _semaphoreSlim.Release();
+            };
         }
+
+        readonly ObservableCollection<View> _conditions = new ObservableCollection<View>();
+        public IList<View> Conditions => _conditions;
 
         public static readonly BindableProperty StateProperty =
-            BindableProperty.Create(
-                nameof(State),
+            BindableProperty.CreateAttached(
+                "State",
                 typeof(object),
                 typeof(StateContainer),
-                null,
-                BindingMode.Default,
-                null,
-                CurrentViewPropertyChanged);
+                default(object),
+                propertyChanged: StateChanged);
 
-        public object State {
-            get => GetValue(StateProperty);
-            set => SetValue(StateProperty, value);
+        public static object GetState(BindableObject bo) {
+            return bo.GetValue(StateProperty);
         }
 
-        static async void CurrentViewPropertyChanged(BindableObject bindable, object oldValue, object newValue) {
+        public static void SetState(BindableObject bo, object value) {
+            bo.SetValue(StateProperty, value);
+        }
+
+        static async void StateChanged(BindableObject bindable, object oldValue, object newValue) {
             if (bindable is StateContainer sc) {
-                await sc.ChooseStateProperty(sc.State);
+                await sc.ChooseStateProperty(GetState(sc));
             }
         }
 
         async Task ChooseStateProperty(object newValue) {
-            if (Conditions == null && Conditions?.Count == 0 || newValue == null) {
+            await _semaphoreSlim.WaitAsync();
+
+            if (Conditions.Count == 0 || newValue == null) {
+                var view = await HideContent();
+                view.IsVisible = false;
                 return;
             }
 
             try {
-                var stateCondition = Conditions.FirstOrDefault(q => q.State != null && q.State.ToString().Equals(newValue?.ToString()));
-                if (stateCondition == null)
-                    return;
+                var condition = Conditions.FirstOrDefault(cond => {
+                    var state = GetState(cond);
+                    return state != null && state.ToString() == newValue.ToString();
+                });
 
-                if (Content != null) {
-                    await Content.FadeTo(0, 100U);
-                    Content.IsVisible = false;
-                    await Task.Delay(30);
+                var view = await HideContent();
+                if (condition != null) {
+                    await ShowContent(view, condition);
                 }
-                stateCondition.Content.Opacity = 0;
-                Content = stateCondition.Content;
-                Content.IsVisible = true;
-                await Content.FadeTo(1);
             }
             catch (Exception e) {
                 Debug.WriteLine($"StateContainer ChooseStateProperty {newValue} error: {e}");
             }
+
+            _semaphoreSlim.Release();
+        }
+
+        async Task<View> HideContent() {
+            var shown = Children.FirstOrDefault(e => e.IsVisible);
+            if (shown != null) {
+                await shown.FadeTo(0, 100U);
+                shown.Opacity = 0;
+            }
+
+            return shown;
+        }
+
+        async Task ShowContent(View oldView, View newView) {
+            newView.Opacity = 0;
+            newView.IsVisible = true;
+            if (oldView != null)
+                oldView.IsVisible = false;
+            await newView.FadeTo(1);
+            newView.Opacity = 1;
+        }
+    }
+
+    public static class StateContainerExt {
+        public static T SetState<T>(this T bo, object state) where T : BindableObject {
+            StateContainer.SetState(bo, state);
+            return bo;
         }
     }
 }
